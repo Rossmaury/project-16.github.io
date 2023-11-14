@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>My Basic Form</title>
+    <title>My Stylish Form</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -21,7 +21,7 @@
         form {
             max-width: 400px;
             margin: 0 auto;
-            padding: 20px;
+
             background-color: #fff;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -71,9 +71,9 @@ function validateInputs() {
 
     // Retrieve variables to be validated and sanitized
     // Assume they are dangerous for now
-    var fullname = new String(document.MyForm.fullname.value);
-    var email = new String(document.MyForm.email.value);
-    var phonenumber = new String(document.MyForm.phonenumber.value);
+    var fullname = document.MyForm.fullname.value.trim();
+    var email = document.MyForm.email.value.trim();
+    var phonenumber = document.MyForm.phonenumber.value.trim();
 
     // Check that the user inputs are not blank
     // JavaScript logical operator for OR: ||
@@ -86,7 +86,7 @@ function validateInputs() {
 
         // Use test() method to check user email against the filter
         if (!filter.test(email)) {
-            FormErrors = "Your form contains invalid email field entries. Please correct your form before submitting";
+            FormErrors = "Invalid email format. Please enter a correct email address.";
             SubmitForm = false;
         }
 
@@ -108,11 +108,8 @@ function validateInputs() {
     } else {
         // Sanitize user inputs
         fullname = fullname.replace(/[^a-z0-9\s\-]/gim, "");
-        fullname = fullname.trim();
         email = email.replace(/[^a-z0-9_@.-]/gim, "");
-        email = email.trim();
         phonenumber = phonenumber.replace(/[^0-9-]/gim, "");
-        phonenumber = phonenumber.trim();
 
         // Ready to submit
         document.MyForm.submit();
