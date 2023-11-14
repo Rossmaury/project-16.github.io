@@ -63,7 +63,11 @@
     <script>
 function validateInputs() {
     // Declaration of variables
-    var FormErrors = "";
+    var SubmitForm;
+    var FormErrors;
+
+    // Initially set SubmitForm to true. 
+    SubmitForm = true;
 
     // Retrieve variables to be validated and sanitized
     // Assume they are dangerous for now
@@ -71,49 +75,51 @@ function validateInputs() {
     var email = document.MyForm.email.value.trim();
     var phonenumber = document.MyForm.phonenumber.value.trim();
 
-    // Reset error messages
-    FormErrors = "";
-
     // Check that the user inputs are not blank
     // JavaScript logical operator for OR: ||
     if (fullname.length < 1 || email.length < 1 || phonenumber.length < 1) {
-        FormErrors += "All fields are mandatory. Please complete the form.\n";
+        FormErrors = "All fields are mandatory. Please complete the form.";
+        SubmitForm = false;
+    } else {
+        // Set up a filter for the pattern of an email
+        var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+        // Use test() method to check user email against the filter
+        if (!filter.test(email)) {
+            FormErrors = "Invalid email format. Please enter a correct email address.";
+            SubmitForm = false;
+        }
+
+        // Check that the phone number contains only numbers and dashes
+        var phoneFilter = /^[\d-]+$/;
+        if (!phoneFilter.test(phonenumber)) {
+            FormErrors = "Invalid phone number. Please use only numbers and dashes.";
+            SubmitForm = false;
+        } else if (!validatePhoneNumberLength(phonenumber, 10)) {
+            FormErrors = "Phone number must have a minimum of 10 digits.";
+            SubmitForm = false;
+        }
     }
 
-    // Set up a filter for the pattern of an email
-    var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-
-    // Use test() method to check user email against the filter
-    if (!filter.test(email)) {
-        FormErrors += "Invalid email format. Please enter a correct email address.\n";
-    }
-
-    // Check that the phone number contains only numbers and dashes
-    var phoneFilter = /^[\d-]+$/;
-    if (!phoneFilter.test(phonenumber)) {
-        FormErrors += "Invalid phone number. Please use only numbers and dashes.\n";
-    } else if (!validatePhoneNumberLength(phonenumber, 10)) {
-        FormErrors += "Phone number must have a minimum of 10 digits.\n";
-    }
-
-    if (FormErrors !== "") {
-        // Display error messages
+    if (SubmitForm == false) {
+        // The form cannot be submitted.
         alert(FormErrors);
-        return false;  // Prevent form submission
+        return false;
+    } else {
+        // Sanitize user inputs
+        fullname = fullname.replace(/[^a-z0-9\s\-]/gim, "");
+        email = email.replace(/[^a-z0-9_@.-]/gim, "");
+        phonenumber = phonenumber.replace(/[^0-9-]/gim, "");
+
+        // Ready to submit
+        document.MyForm.submit();
     }
-
-    // Sanitize user inputs
-    fullname = fullname.replace(/[^a-z0-9\s\-]/gim, "");
-    email = email.replace(/[^a-z0-9_@.-]/gim, "");
-    phonenumber = phonenumber.replace(/[^0-9-]/gim, "");
-
-    // Ready to submit
-    return true;
 }
 
 function validatePhoneNumberLength(phoneNumber, minLength) {
     // Check if the phone number has at least minLength digits
-    return phoneNumber.replace(/\D/g, '').length >= minLength;
+    return phoneNumber.replace(/\D/g, '').length >= minLength; }
+
 
     </script>
 </body>
