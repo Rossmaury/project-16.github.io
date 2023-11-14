@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>My Basic Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4285f4;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #4285f4;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #357ae8;
+        }
+    </style>
+
+</head>
+
+<body>
+    <h1>Newsletter Sign-Up</h1>
+    <form name="MyForm" method="post" action="thankyou.html">
+        <div>
+            <input type="text" name="fullname" placeholder="Your name*" maxlength="20">
+            <input type="text" name="email" placeholder="Your email*" maxlength="40">
+            <input type="text" name="phonenumber" placeholder="Your phone number*" maxlength="15">
+            <input type="submit" name="submit" value="Submit" onClick="javascript:return validateInputs();">
+        </div>
+    </form>
+
+    <script>
+function validateInputs() {
+    // Declaration of variables
+    var SubmitForm;
+    var FormErrors;
+
+    // Initially set SubmitForm to true. 
+    SubmitForm = true;
+
+    // Retrieve variables to be validated and sanitized
+    // Assume they are dangerous for now
+    var fullname = new String(document.MyForm.fullname.value);
+    var email = new String(document.MyForm.email.value);
+    var phonenumber = new String(document.MyForm.phonenumber.value);
+
+    // Check that the user inputs are not blank
+    // JavaScript logical operator for OR: ||
+    if (fullname.length < 1 || email.length < 1 || phonenumber.length < 1) {
+        FormErrors = "All fields are mandatory. Please complete the form.";
+        SubmitForm = false;
+    } else {
+        // Set up a filter for the pattern of an email
+        var filter = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+
+        // Use test() method to check user email against the filter
+        if (!filter.test(email)) {
+            FormErrors = "Your form contains invalid email field entries. Please correct your form before submitting";
+            SubmitForm = false;
+        }
+
+        // Check that the phone number contains only numbers and dashes
+        var phoneFilter = /^[\d-]+$/;
+        if (!phoneFilter.test(phonenumber)) {
+            FormErrors = "Invalid phone number. Please use only numbers and dashes.";
+            SubmitForm = false;
+        } else if (!validatePhoneNumberLength(phonenumber, 10)) {
+            FormErrors = "Phone number must have a minimum of 10 digits.";
+            SubmitForm = false;
+        }
+    }
+
+    if (SubmitForm == false) {
+        // The form cannot be submitted.
+        alert(FormErrors);
+        return false;
+    } else {
+        // Sanitize user inputs
+        fullname = fullname.replace(/[^a-z0-9\s\-]/gim, "");
+        fullname = fullname.trim();
+        email = email.replace(/[^a-z0-9_@.-]/gim, "");
+        email = email.trim();
+        phonenumber = phonenumber.replace(/[^0-9-]/gim, "");
+        phonenumber = phonenumber.trim();
+
+        // Ready to submit
+        document.MyForm.submit();
+    }
+}
+
+function validatePhoneNumberLength(phoneNumber, minLength) {
+    // Check if the phone number has at least minLength digits
+    return phoneNumber.replace(/\D/g, '').length >= minLength;
+
+    </script>
+</body>
+
+</html>
